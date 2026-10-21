@@ -38,6 +38,7 @@
   --accent-soft: #ecf7a0;
   --accent-soft-foreground: #0a0f0d;
   --success: #1d8a5a;
+  --success-foreground: #ffffff;
   --focus: #1d6b48;
   --radius: 0.75rem;
 
@@ -69,6 +70,7 @@
   --accent-soft: #2c3d0c;
   --accent-soft-foreground: #e4f57a;
   --success: #3fbf7f;
+  --success-foreground: #0a0f0d;
   --focus: #c9ff5c;
 
   --brand: #c9ff5c;

@@ -229,7 +229,7 @@ function AuctionPage() {
         <ArrowLeftIcon /> {t('common.back')}
       </Link>
       <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
-        <div className="space-y-6">
+        <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
           <AuctionVisual
             category={auction.category}
             className="aspect-[4/3] rounded-3xl border-2 border-ink shadow-[6px_6px_0_var(--card-shadow)]"
@@ -251,7 +251,7 @@ function AuctionPage() {
           </Card>
         </div>
 
-        <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+        <div className="space-y-6">
           <Card className="p-5 sm:p-6">
             <Card.Header className="gap-3">
               <div className="flex flex-wrap items-center gap-2">
