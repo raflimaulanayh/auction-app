@@ -13,6 +13,6 @@ export const useDb = create<DbStore>()(
       ...createSeed(),
       reset: () => set(createSeed()),
     }),
-    { name: 'lelangin-db-v1' },
+    { name: 'lelangin-db-v2' },
   ),
 )

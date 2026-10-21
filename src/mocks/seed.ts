@@ -12,6 +12,71 @@ export const BOTS = [
   { id: 'u-fajar', name: 'Fajar R.' },
 ]
 
+// Free Unsplash photos (hotlinked via their CDN). Items without an entry fall back to
+// the illustrated placeholder, which also covers photos that fail to load.
+const PHOTOS: Record<string, string[]> = {
+  'iphone-16-pro-max': [
+    'photo-1727093493838-5a5f2da03b65',
+    'photo-1727013884184-b313982327f3',
+    'photo-1695822822491-d92cee704368',
+    'photo-1695823018812-c684c980ede6',
+  ],
+  'rolex-submariner': [
+    'photo-1662384197911-e82189f4dc60',
+    'photo-1526045431048-f857369baa09',
+    'photo-1681149530815-76c2e829c2d2',
+  ],
+  'vespa-sprint': [
+    'photo-1623241207542-0a29432c0d1c',
+    'photo-1619810148944-b8ae943b049a',
+    'photo-1779168877350-46203d95556f',
+    'photo-1638730177894-d4da3051261d',
+  ],
+  'lukisan-senja-ubud': [
+    'photo-1688590987514-97a7bf2953bb',
+    'photo-1775311406542-1e18d37f7012',
+    'photo-1742672001310-a6fab9c25b92',
+    'photo-1775311406662-e075f7c98dd4',
+  ],
+  'jordan-1-chicago': [
+    'photo-1669205073423-5da5a5280572',
+    'photo-1686931463322-916e93213d86',
+    'photo-1565571323165-ab0ee8e01666',
+  ],
+  'macbook-pro-m4': [
+    'photo-1541807084-5c52b6b3adef',
+    'photo-1537498425277-c283d32ef9db',
+    'photo-1611186871348-b1ce696e52c9',
+    'photo-1651241678796-422d47d747ce',
+  ],
+  'koin-voc-1790': [
+    'photo-1589180176337-503fed4bcfe0',
+    'photo-1624295329185-13a841e9a268',
+    'photo-1624365167573-80c5d1b7681f',
+    'photo-1725790156908-26a251178d10',
+  ],
+  'sony-a7iv': [
+    'photo-1603457893497-4de5ef1d8ab1',
+    'photo-1552233706-c3ff6a3da279',
+    'photo-1606986628470-26a67fa4730c',
+    'photo-1552233707-a3185320d9a0',
+  ],
+  'keris-luk-9': ['photo-1702287721762-a0b2dc0f0e70', 'photo-1577081467890-d407baf6fc1f'],
+  'ps5-pro-bundle': [
+    'photo-1606144042614-b2417e99c4e3',
+    'photo-1731405849985-8e5478dddc5e',
+    'photo-1670535787435-63a39a5b8d32',
+    'photo-1670535788315-6b7d64aa020c',
+  ],
+  'fender-strat-1978': [
+    'photo-1763518372027-6978e6bf5885',
+    'photo-1649520067033-ef64fee2d060',
+    'photo-1632413190012-4a9591b7eb91',
+  ],
+}
+const photo = (path: string) =>
+  `https://images.unsplash.com/${path}?w=900&q=75&auto=format&fit=crop`
+
 const MIN = 60_000
 const HOUR = 60 * MIN
 
@@ -265,6 +330,10 @@ export function createSeed(now = Date.now()): DemoDb {
   const proxies: ProxyBid[] = [
     { auctionId: 'iphone-16-pro-max', userId: 'u-andi', userName: 'Andi P.', max: 18_500_000 },
   ]
+
+  for (const a of auctions) {
+    if (PHOTOS[a.id]) a.images = PHOTOS[a.id].map(photo)
+  }
 
   return {
     auctions,

@@ -21,7 +21,9 @@
     "loading": "Loading…",
     "by": "by {{name}}",
     "you": "You",
-    "demoBanner": "Prototype mode — dummy data & bot bidders active"
+    "demoBanner": "Prototype mode — dummy data & bot bidders active",
+    "prevPhoto": "Previous photo",
+    "nextPhoto": "Next photo"
   },
   "home": {
     "heroTitle": "Win what you love, fairly.",
@@ -198,7 +200,12 @@
     "publish": "Publish auction",
     "published": "Auction published",
     "required": "Required",
-    "floorTooHigh": "Floor price must be below the starting price"
+    "floorTooHigh": "Floor price must be below the starting price",
+    "photos": "Item photos",
+    "photosHint": "the first photo is the cover",
+    "cover": "Cover",
+    "addPhoto": "Add photo",
+    "removePhoto": "Remove photo"
   },
   "auth": {
     "title": "Sign in to Lelangin",

@@ -24,7 +24,8 @@ import { formatRupiah } from '../lib/money'
 import { useNow } from '../lib/time'
 import type { AuctionSummary } from '../services/auctionService'
 import { useAuctions } from '../services/queries'
-import { AuctionVisual, Countdown } from './auction-bits'
+import { Countdown } from './auction-bits'
+import { AuctionThumb } from './media'
 import { Marker } from './brand'
 import { AnimatedPrice } from './motion/AnimatedPrice'
 import { LinkButton } from './LinkButton'
@@ -204,8 +205,10 @@ function EndingSlide({ auction }: { auction: AuctionSummary }) {
       aside={
         <div className="relative mx-auto max-w-sm">
           <TiltedCard rotate={2} className="overflow-hidden">
-            <AuctionVisual
+            <AuctionThumb
+              images={auction.images}
               category={auction.category}
+              alt={auction.title}
               className="aspect-[16/10] border-b-2 border-ink"
             />
             <div className="space-y-1 p-5">

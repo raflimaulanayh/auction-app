@@ -21,7 +21,9 @@
     "loading": "Memuat…",
     "by": "oleh {{name}}",
     "you": "Kamu",
-    "demoBanner": "Mode prototype — data dummy & bot penawar aktif"
+    "demoBanner": "Mode prototype — data dummy & bot penawar aktif",
+    "prevPhoto": "Foto sebelumnya",
+    "nextPhoto": "Foto berikutnya"
   },
   "home": {
     "heroTitle": "Menangkan barang impianmu, secara adil.",
@@ -198,7 +200,12 @@
     "publish": "Terbitkan lelang",
     "published": "Lelang berhasil diterbitkan",
     "required": "Wajib diisi",
-    "floorTooHigh": "Harga terendah harus di bawah harga awal"
+    "floorTooHigh": "Harga terendah harus di bawah harga awal",
+    "photos": "Foto barang",
+    "photosHint": "foto pertama jadi cover",
+    "cover": "Cover",
+    "addPhoto": "Tambah foto",
+    "removePhoto": "Hapus foto"
   },
   "auth": {
     "title": "Masuk ke Lelangin",

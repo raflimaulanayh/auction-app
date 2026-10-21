@@ -3,7 +3,9 @@ import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, RocketLaunchIcon } from '@pho
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AuctionVisual, TYPE_ICON, TypeChip } from '../../components/auction-bits'
+import { TYPE_ICON, TypeChip } from '../../components/auction-bits'
+import { CardCarousel } from '../../components/media'
+import { PhotoPicker } from '../../features/seller/PhotoPicker'
 import { EmptyState } from '../../components/AuctionCard'
 import { MoneyInput } from '../../features/auctions/MoneyInput'
 import { requireAuth } from '../../lib/guard'
@@ -43,6 +45,7 @@ function CreateAuctionPage() {
     floorPrice: 500_000,
     decrement: 50_000,
     intervalSec: 15,
+    images: [],
   })
   const patch = (p: Partial<NewAuctionInput>) => setForm((f) => ({ ...f, ...p }))
 
@@ -144,6 +147,7 @@ function CreateAuctionPage() {
 
           {step === 1 && (
             <div className="space-y-4">
+              <PhotoPicker value={form.images ?? []} onChange={(images) => patch({ images })} />
               <TextField
                 value={form.title}
                 onChange={(title) => patch({ title })}
@@ -254,9 +258,11 @@ function CreateAuctionPage() {
 
           {step === 3 && (
             <div className="flex flex-col gap-5 sm:flex-row">
-              <AuctionVisual
+              <CardCarousel
+                images={form.images}
                 category={form.category}
-                className="aspect-[4/3] rounded-2xl sm:w-56"
+                alt={form.title}
+                className="aspect-[4/3] rounded-2xl border-2 border-ink sm:w-64"
               />
               <div className="flex-1 space-y-2">
                 <TypeChip type={form.type} />

@@ -2,7 +2,8 @@ import { Chip, Skeleton } from '@heroui/react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AuctionVisual, Countdown, TypeChip } from '../../components/auction-bits'
+import { Countdown, TypeChip } from '../../components/auction-bits'
+import { AuctionThumb } from '../../components/media'
 import { EmptyState } from '../../components/AuctionCard'
 import { requireAuth } from '../../lib/guard'
 import { formatRupiah } from '../../lib/money'
@@ -66,9 +67,11 @@ function MyBidsPage() {
                 params={{ auctionId: auction.id }}
                 className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-3 transition hover:border-foreground"
               >
-                <AuctionVisual
+                <AuctionThumb
+                  images={auction.images}
                   category={auction.category}
-                  className="size-20 shrink-0 rounded-xl"
+                  alt={auction.title}
+                  className="size-20 shrink-0 rounded-xl border-2 border-ink"
                 />
                 <div className="min-w-0 flex-1 space-y-1">
                   <p className="truncate font-semibold">{auction.title}</p>

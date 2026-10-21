@@ -11,7 +11,8 @@ import {
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { formatDistanceToNow } from 'date-fns'
 import { useTranslation } from 'react-i18next'
-import { AuctionVisual, Countdown, StatusChip, TypeChip } from '../../components/auction-bits'
+import { Countdown, StatusChip, TypeChip } from '../../components/auction-bits'
+import { Gallery } from '../../components/media'
 import { AnimatedPrice } from '../../components/motion/AnimatedPrice'
 import { DutchPanel } from '../../features/auctions/DutchPanel'
 import { EnglishPanel } from '../../features/auctions/EnglishPanel'
@@ -229,10 +230,7 @@ function AuctionPage() {
       </Link>
       <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
         <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-          <AuctionVisual
-            category={auction.category}
-            className="aspect-[4/3] rounded-3xl border-2 border-ink shadow-[6px_6px_0_var(--card-shadow)]"
-          />
+          <Gallery images={auction.images} category={auction.category} alt={auction.title} />
           <Card>
             <Card.Header>
               <Card.Title>{t('auction.description')}</Card.Title>

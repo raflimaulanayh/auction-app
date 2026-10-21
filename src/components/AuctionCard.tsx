@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next'
 import { auctionStatus, dutchPrice } from '../lib/auction-rules'
 import { useNow } from '../lib/time'
 import type { AuctionSummary } from '../services/auctionService'
-import { AuctionVisual, Countdown, StatusChip, TypeChip } from './auction-bits'
+import { Countdown, StatusChip, TypeChip } from './auction-bits'
+import { CardCarousel } from './media'
 import { AnimatedPrice } from './motion/AnimatedPrice'
 import { TiltCard } from './motion/TiltCard'
 
@@ -33,9 +34,11 @@ export function AuctionCard({ auction }: { auction: AuctionSummary }) {
       <TiltCard className="h-full">
         <Card className="h-full overflow-hidden p-0 transition-shadow duration-300 group-hover:shadow-2xl ">
           <div className="relative">
-            <AuctionVisual
+            <CardCarousel
+              images={auction.images}
               category={auction.category}
-              className="aspect-[4/3] transition group-hover:scale-[1.02]"
+              alt={auction.title}
+              className="aspect-[4/3] border-b-2 border-ink"
             />
             <div className="absolute left-3 top-3 flex gap-1.5 rounded-full bg-background/90 backdrop-blur">
               <StatusChip auction={auction} />

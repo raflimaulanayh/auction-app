@@ -30,6 +30,8 @@ export interface Auction {
   decrement?: number
   intervalSec?: number
   extendedCount: number
+  /** Photo URLs; the first one is the cover. */
+  images?: string[]
   soldAt?: number
   winnerId?: string
   createdAt: number
@@ -71,4 +73,5 @@ export type NewAuctionInput = Pick<
   | 'floorPrice'
   | 'decrement'
   | 'intervalSec'
+  | 'images'
 > & { durationMin: number }
