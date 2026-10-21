@@ -204,5 +204,20 @@
     "ownAuction": "You can't bid on your own auction",
     "notFound": "Auction not found",
     "generic": "Something went wrong, please try again"
+  },
+  "hero": {
+    "label": "Auction highlights",
+    "prev": "Previous slide",
+    "next": "Next slide",
+    "endingEyebrow": "Ending soon — don’t miss it",
+    "joinBid": "Join the bidding",
+    "dutchEyebrow": "Price dropping now",
+    "dutchHint": "First come, first served: the first buyer to commit wins instantly.",
+    "grabIt": "Grab it before others do",
+    "sealedTitle": "Bid once, in secret.",
+    "sealedStep1": "Submit one sealed bid — no one else can see it.",
+    "sealedStep2": "When the auction closes, all bids are revealed at once.",
+    "sealedStep3": "The highest bidder wins but only pays the second-highest price.",
+    "sealedCta": "Bid on {{title}}"
   }
 }

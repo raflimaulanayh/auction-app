@@ -1,9 +1,10 @@
-import { Button, Card, Skeleton } from '@heroui/react'
-import { ArrowRightIcon, LightningIcon } from '@phosphor-icons/react'
+import { Card, Skeleton } from '@heroui/react'
+import { ArrowRightIcon } from '@phosphor-icons/react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { AuctionGrid } from '../components/AuctionCard'
 import { TYPE_ICON } from '../components/auction-bits'
+import { HeroSlider } from '../components/HeroSlider'
 import { useAuctions } from '../services/queries'
 import type { AuctionType } from '../types'
 
@@ -43,31 +44,7 @@ function HomePage() {
 
   return (
     <div className="space-y-14">
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 px-6 py-14 text-white sm:px-12">
-        <div className="absolute -right-20 -top-20 size-80 rounded-full bg-white/10 blur-3xl" />
-        <div className="absolute -bottom-24 left-1/3 size-72 rounded-full bg-amber-300/20 blur-3xl" />
-        <div className="relative max-w-2xl space-y-5">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">
-            <LightningIcon weight="fill" className="text-amber-300" /> {t('common.tagline')}
-          </span>
-          <h1 className="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-            {t('home.heroTitle')}
-          </h1>
-          <p className="text-base text-white/80 sm:text-lg">{t('home.heroSubtitle')}</p>
-          <div className="flex flex-wrap gap-3">
-            <Link to="/auctions">
-              <Button size="lg" className="bg-white text-indigo-700">
-                {t('home.explore')} <ArrowRightIcon weight="bold" />
-              </Button>
-            </Link>
-            <Link to="/sell/new">
-              <Button size="lg" variant="ghost" className="text-white hover:bg-white/15">
-                {t('home.startSelling')}
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <HeroSlider />
 
       <section className="grid gap-4 md:grid-cols-3">
         {types.map((type) => {

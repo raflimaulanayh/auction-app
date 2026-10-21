@@ -204,5 +204,20 @@
     "ownAuction": "Kamu tidak bisa menawar lelang sendiri",
     "notFound": "Lelang tidak ditemukan",
     "generic": "Terjadi kesalahan, coba lagi"
+  },
+  "hero": {
+    "label": "Sorotan lelang",
+    "prev": "Slide sebelumnya",
+    "next": "Slide berikutnya",
+    "endingEyebrow": "Segera berakhir — jangan sampai terlewat",
+    "joinBid": "Ikut menawar",
+    "dutchEyebrow": "Harga sedang turun",
+    "dutchHint": "Siapa cepat dia dapat: pembeli pertama yang menekan beli langsung menang.",
+    "grabIt": "Ambil sebelum keduluan",
+    "sealedTitle": "Tawar sekali, secara rahasia.",
+    "sealedStep1": "Kirim satu tawaran tertutup — peserta lain tidak bisa melihatnya.",
+    "sealedStep2": "Saat lelang ditutup, semua tawaran dibuka bersamaan.",
+    "sealedStep3": "Penawar tertinggi menang, tapi cukup membayar harga tertinggi kedua.",
+    "sealedCta": "Ikut lelang {{title}}"
   }
 }
