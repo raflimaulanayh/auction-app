@@ -1,0 +1,31 @@
+@import 'tailwindcss';
+@import '@heroui/styles';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+html,
+body {
+  @apply bg-background text-foreground antialiased;
+  font-family: var(--font-sans);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes flash-bid {
+  from {
+    background-color: color-mix(in oklab, var(--color-success) 25%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+.flash {
+  animation: flash-bid 1.2s ease-out;
+}
