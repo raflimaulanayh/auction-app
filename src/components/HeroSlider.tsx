@@ -1,4 +1,3 @@
-import { Button } from '@heroui/react'
 import {
   ArrowRightIcon,
   CaretLeftIcon,
@@ -9,7 +8,6 @@ import {
   TimerIcon,
   TrendDownIcon,
 } from '@phosphor-icons/react'
-import { Link } from '@tanstack/react-router'
 import {
   motion,
   useMotionValue,
@@ -29,6 +27,7 @@ import { useAuctions } from '../services/queries'
 import { AuctionVisual, Countdown } from './auction-bits'
 import { Marker } from './brand'
 import { AnimatedPrice } from './motion/AnimatedPrice'
+import { LinkButton } from './LinkButton'
 
 const GavelScene = lazy(() => import('./three/GavelScene'))
 
@@ -180,11 +179,9 @@ function BrandSlide({ liveCount }: { liveCount: number }) {
       </h1>
       <p className="max-w-xl text-base text-paper/70 sm:text-lg">{t('home.heroSubtitle')}</p>
       <div className="flex flex-wrap items-center gap-5">
-        <Link to="/auctions">
-          <Button size="lg">
-            {t('home.explore')} <ArrowRightIcon weight="bold" />
-          </Button>
-        </Link>
+        <LinkButton to="/auctions" size="lg">
+          {t('home.explore')} <ArrowRightIcon weight="bold" />
+        </LinkButton>
         <a
           href="#how"
           className="group inline-flex items-center gap-2 font-extrabold text-paper underline decoration-lime decoration-[3px] underline-offset-[6px]"
@@ -250,11 +247,9 @@ function EndingSlide({ auction }: { auction: AuctionSummary }) {
           <Countdown auction={auction} large />
         </div>
       </div>
-      <Link to="/auctions/$auctionId" params={{ auctionId: auction.id }}>
-        <Button size="lg">
-          {t('hero.joinBid')} <ArrowRightIcon weight="bold" />
-        </Button>
-      </Link>
+      <LinkButton to="/auctions/$auctionId" params={{ auctionId: auction.id }} size="lg">
+        {t('hero.joinBid')} <ArrowRightIcon weight="bold" />
+      </LinkButton>
     </SlideFrame>
   )
 }
@@ -306,11 +301,14 @@ function DutchSlide({ auction }: { auction: AuctionSummary }) {
         <span className="tabular">{dropIn}s</span>
       </p>
       <p className="max-w-lg text-ink/70">{t('hero.dutchHint')}</p>
-      <Link to="/auctions/$auctionId" params={{ auctionId: auction.id }}>
-        <Button size="lg" className="bg-ink text-lime">
-          {t('hero.grabIt')} <ArrowRightIcon weight="bold" />
-        </Button>
-      </Link>
+      <LinkButton
+        to="/auctions/$auctionId"
+        params={{ auctionId: auction.id }}
+        size="lg"
+        className="bg-ink text-lime"
+      >
+        {t('hero.grabIt')} <ArrowRightIcon weight="bold" />
+      </LinkButton>
     </SlideFrame>
   )
 }
@@ -348,18 +346,17 @@ function SealedSlide({ auction }: { auction?: AuctionSummary }) {
         {t('hero.sealedTitleLead')} <Marker>{t('hero.sealedTitleMark')}</Marker>
       </h2>
       <p className="max-w-xl text-paper/70 sm:text-lg">{t('sealed.vickreyInfo')}</p>
-      <Link
+      <LinkButton
         {...(auction
           ? { to: '/auctions/$auctionId', params: { auctionId: auction.id } }
           : { to: '/auctions', search: { type: 'sealed' } })}
+        size="lg"
       >
-        <Button size="lg">
-          <LockKeyIcon weight="bold" />
-          {auction
-            ? t('hero.sealedCta', { title: auction.title.split(' ').slice(0, 3).join(' ') })
-            : t('common.seeAll')}
-        </Button>
-      </Link>
+        <LockKeyIcon weight="bold" />
+        {auction
+          ? t('hero.sealedCta', { title: auction.title.split(' ').slice(0, 3).join(' ') })
+          : t('common.seeAll')}
+      </LinkButton>
     </SlideFrame>
   )
 }

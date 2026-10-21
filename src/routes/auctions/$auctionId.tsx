@@ -12,7 +12,6 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { formatDistanceToNow } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { AuctionVisual, Countdown, StatusChip, TypeChip } from '../../components/auction-bits'
-import { EmptyState } from '../../components/AuctionCard'
 import { AnimatedPrice } from '../../components/motion/AnimatedPrice'
 import { DutchPanel } from '../../features/auctions/DutchPanel'
 import { EnglishPanel } from '../../features/auctions/EnglishPanel'
@@ -24,6 +23,8 @@ import { dateLocale, useNow } from '../../lib/time'
 import { useSession } from '../../services/authService'
 import type { AuctionDetail } from '../../services/auctionService'
 import { useAuction, useToggleWatch } from '../../services/queries'
+import { LinkButton } from '../../components/LinkButton'
+import { NotFoundPage } from '../../components/StatusPage'
 
 export const Route = createFileRoute('/auctions/$auctionId')({ component: AuctionPage })
 
@@ -190,7 +191,7 @@ function AuctionPage() {
       </div>
     )
   }
-  if (isError || !detail) return <EmptyState message={t('auction.notFound')} />
+  if (isError || !detail) return <NotFoundPage />
 
   const { auction } = detail
   const status = auctionStatus(auction, now)
@@ -199,11 +200,9 @@ function AuctionPage() {
   let panel: React.ReactNode
   if (!user) {
     panel = live ? (
-      <Link to="/login" search={{ redirect: `/auctions/${auction.id}` }}>
-        <Button fullWidth size="lg">
-          {t('auction.loginToBid')}
-        </Button>
-      </Link>
+      <LinkButton to="/login" search={{ redirect: `/auctions/${auction.id}` }} fullWidth size="lg">
+        {t('auction.loginToBid')}
+      </LinkButton>
     ) : null
   } else if (user.id === auction.sellerId) {
     panel = (

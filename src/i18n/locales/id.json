@@ -265,5 +265,21 @@
     "proxyTyping": "auto-bid aktif sampai Rp 19 jt",
     "snipeNote": "tawaran masuk → waktu nambah!",
     "winNote": "Pembayaran & pengiriman diatur setelah menang"
+  },
+  "page": {
+    "notFoundNote": "eh, kayaknya nyasar deh",
+    "notFoundLead": "Halaman ini",
+    "notFoundMark": "udah kejual.",
+    "notFoundBody": "Atau memang nggak pernah ada. Coba cek lagi alamatnya, atau langsung lihat lelang yang lagi seru.",
+    "notFoundCard": "dicari ke mana-mana, nggak ketemu",
+    "browse": "Lihat lelang",
+    "home": "Ke beranda",
+    "errorNote": "waduh, ada yang error",
+    "errorLead": "Palunya",
+    "errorMark": "kepeleset.",
+    "errorBody": "Terjadi kesalahan saat memuat halaman ini. Coba muat ulang — kalau masih error, kembali ke halaman sebelumnya.",
+    "errorCard": "tenang, data kamu aman",
+    "retry": "Coba lagi",
+    "details": "Detail error (mode dev)"
   }
 }

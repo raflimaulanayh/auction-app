@@ -265,5 +265,21 @@
     "proxyTyping": "auto-bid active up to Rp 19M",
     "snipeNote": "bid lands → time extends!",
     "winNote": "Payment & shipping are arranged after you win"
+  },
+  "page": {
+    "notFoundNote": "oops, looks like you got lost",
+    "notFoundLead": "This page",
+    "notFoundMark": "already sold.",
+    "notFoundBody": "Or it never existed. Double-check the address, or jump straight into the auctions that are heating up.",
+    "notFoundCard": "searched everywhere, nothing here",
+    "browse": "Browse auctions",
+    "home": "Go home",
+    "errorNote": "uh-oh, something broke",
+    "errorLead": "The gavel",
+    "errorMark": "slipped.",
+    "errorBody": "Something went wrong while loading this page. Try again — if it keeps failing, go back to the previous page.",
+    "errorCard": "don’t worry, your data is safe",
+    "retry": "Try again",
+    "details": "Error details (dev mode)"
   }
 }

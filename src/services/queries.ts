@@ -21,7 +21,13 @@ export const useAuctions = (filters: AuctionFilters) =>
 
 export function useAuction(id: string) {
   const userId = useSession((s) => s.user?.id)
-  return useQuery({ queryKey: keys.detail(id, userId), queryFn: () => api.getAuction(id, userId) })
+  return useQuery({
+    queryKey: keys.detail(id, userId),
+    queryFn: () => api.getAuction(id, userId),
+    // A missing auction won't appear on retry; show the 404 right away.
+    retry: (count, error) =>
+      !(error instanceof AuctionError && error.code === 'notFound') && count < 2,
+  })
 }
 
 export function useMyBids() {

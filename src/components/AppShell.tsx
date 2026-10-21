@@ -21,6 +21,7 @@ import { useDb } from '../mocks/db'
 import { logout, useSession } from '../services/authService'
 import { keys } from '../services/queries'
 import { useTheme } from '../theme'
+import { LinkButton } from './LinkButton'
 
 function LanguageSwitcher() {
   const { t, i18n } = useTranslation()
@@ -169,11 +170,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </Button>
               </div>
             ) : (
-              <Link to="/login" className="ml-1">
-                <Button size="sm" className="bg-ink text-paper dark:bg-lime dark:text-ink">
-                  {t('common.login')}
-                </Button>
-              </Link>
+              <LinkButton
+                to="/login"
+                size="sm"
+                className="ml-1 bg-ink text-paper dark:bg-lime dark:text-ink"
+              >
+                {t('common.login')}
+              </LinkButton>
             )}
           </div>
         </div>

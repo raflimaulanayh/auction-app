@@ -1,6 +1,6 @@
-import { Button, Card, Skeleton } from '@heroui/react'
+import { Card, Skeleton } from '@heroui/react'
 import { CoinsIcon, GavelIcon, PlusIcon, PulseIcon } from '@phosphor-icons/react'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { AuctionGrid, EmptyState } from '../../components/AuctionCard'
 import { auctionStatus } from '../../lib/auction-rules'
@@ -8,6 +8,7 @@ import { requireAuth } from '../../lib/guard'
 import { formatRupiah } from '../../lib/money'
 import { useSession } from '../../services/authService'
 import { useSellerAuctions } from '../../services/queries'
+import { LinkButton } from '../../components/LinkButton'
 
 export const Route = createFileRoute('/sell/')({
   beforeLoad: requireAuth,
@@ -53,11 +54,9 @@ function SellerDashboard() {
           <h1 className="text-3xl font-extrabold tracking-tight">{t('seller.dashboard')}</h1>
           <p className="text-sm text-muted">{user.name}</p>
         </div>
-        <Link to="/sell/new">
-          <Button>
-            <PlusIcon weight="bold" /> {t('seller.create')}
-          </Button>
-        </Link>
+        <LinkButton to="/sell/new">
+          <PlusIcon weight="bold" /> {t('seller.create')}
+        </LinkButton>
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
         {stats.map(({ label, value, icon: StatIcon }) => (
