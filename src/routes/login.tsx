@@ -81,7 +81,7 @@ function LoginPage() {
               key={u.id}
               onClick={() => void signIn(u.email)}
               disabled={!!loading}
-              className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4 text-left transition hover:border-accent hover:shadow-sm disabled:opacity-60"
+              className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4 text-left transition hover:border-foreground hover:shadow-sm disabled:opacity-60"
             >
               <Avatar color={u.role === 'seller' ? 'warning' : 'accent'}>
                 <Avatar.Fallback>{u.name.slice(0, 2).toUpperCase()}</Avatar.Fallback>

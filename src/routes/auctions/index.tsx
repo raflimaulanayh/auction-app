@@ -37,8 +37,8 @@ function Pill({
       onClick={onClick}
       className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${
         active
-          ? 'border-accent bg-accent text-accent-foreground'
-          : 'border-border bg-surface text-muted hover:border-accent hover:text-foreground'
+          ? 'border-ink bg-accent text-accent-foreground shadow-[2px_2px_0_#0a0f0d]'
+          : 'border-border bg-surface text-muted hover:border-foreground hover:text-foreground'
       }`}
     >
       {children}
@@ -84,7 +84,7 @@ function AuctionsPage() {
             defaultValue={search.q}
             onChange={(e) => set({ q: e.target.value || undefined })}
             placeholder={t('common.search')}
-            className="h-10 w-full rounded-xl border border-border bg-surface pl-9 pr-3 text-sm outline-none focus:border-accent"
+            className="h-10 w-full rounded-xl border border-border bg-surface pl-9 pr-3 text-sm outline-none focus:border-foreground"
           />
         </div>
       </div>
@@ -128,7 +128,7 @@ function AuctionsPage() {
           <select
             value={search.sort ?? 'ending'}
             onChange={(e) => set({ sort: e.target.value as Search['sort'] })}
-            className="h-9 rounded-xl border border-border bg-surface px-3 text-sm outline-none focus:border-accent"
+            className="h-9 rounded-xl border border-border bg-surface px-3 text-sm outline-none focus:border-foreground"
           >
             {sorts.map(([value, label]) => (
               <option key={value} value={value}>

@@ -63,7 +63,7 @@ function SellerDashboard() {
         {stats.map(({ label, value, icon: StatIcon }) => (
           <Card key={label}>
             <Card.Content className="flex-row items-center gap-4 p-5">
-              <span className="grid size-12 place-items-center rounded-2xl bg-accent-soft text-accent">
+              <span className="grid size-12 place-items-center rounded-2xl bg-accent-soft text-brand">
                 <StatIcon weight="duotone" className="size-6" />
               </span>
               <div>

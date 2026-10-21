@@ -25,13 +25,14 @@ const CATEGORY_ICON: Record<Category, Icon> = {
   fashion: TShirtIcon,
 }
 
-const CATEGORY_GRADIENT: Record<Category, string> = {
-  electronics: 'from-sky-500/80 via-indigo-500/70 to-violet-600/80',
-  watches: 'from-amber-400/80 via-orange-500/70 to-rose-500/80',
-  art: 'from-fuchsia-500/80 via-pink-500/70 to-orange-400/80',
-  vehicles: 'from-emerald-500/80 via-teal-500/70 to-cyan-600/80',
-  collectibles: 'from-yellow-500/80 via-amber-600/70 to-stone-700/80',
-  fashion: 'from-rose-400/80 via-red-500/70 to-purple-600/80',
+// Flat, earthy tints that sit well next to the forest/lime brand palette.
+const CATEGORY_TINT: Record<Category, string> = {
+  electronics: 'bg-[#c9e6d6]',
+  watches: 'bg-[#f4e3b5]',
+  art: 'bg-[#f6d0d4]',
+  vehicles: 'bg-[#cfe0f5]',
+  collectibles: 'bg-lime-soft',
+  fashion: 'bg-[#e5d9f2]',
 }
 
 export const TYPE_ICON: Record<AuctionType, Icon> = {
@@ -51,14 +52,12 @@ export function AuctionVisual({
   const CategoryIcon = CATEGORY_ICON[category]
   return (
     <div
-      className={`relative flex items-center justify-center overflow-hidden bg-gradient-to-br ${CATEGORY_GRADIENT[category]} ${className}`}
+      className={`relative flex items-center justify-center overflow-hidden ${CATEGORY_TINT[category]} ${className}`}
     >
-      <div className="absolute -right-8 -top-8 size-32 rounded-full bg-white/15 blur-2xl" />
-      <div className="absolute -bottom-10 -left-6 size-36 rounded-full bg-black/10 blur-2xl" />
-      <CategoryIcon
-        weight="duotone"
-        className="relative size-1/3 max-h-28 text-white drop-shadow-lg"
-      />
+      <div className="absolute inset-0 [--grid-line:rgb(18_41_34/0.08)] grid-paper" />
+      <div className="relative grid size-2/5 max-h-32 max-w-32 -rotate-3 place-items-center rounded-2xl border-2 border-ink bg-white shadow-[4px_4px_0_#0a0f0d] transition-transform duration-300 group-hover:rotate-2">
+        <CategoryIcon weight="duotone" className="size-1/2 text-ink" />
+      </div>
     </div>
   )
 }

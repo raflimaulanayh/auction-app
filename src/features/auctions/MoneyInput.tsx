@@ -14,7 +14,7 @@ export function MoneyInput({
   return (
     <label htmlFor={id} className="block space-y-1.5">
       <span className="text-sm font-medium">{label}</span>
-      <div className="flex h-11 items-center rounded-xl border border-border bg-field px-3 focus-within:border-accent">
+      <div className="flex h-11 items-center rounded-xl border border-border bg-field px-3 focus-within:border-foreground">
         <span className="mr-2 text-sm font-semibold text-muted">Rp</span>
         <input
           id={id}

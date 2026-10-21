@@ -125,13 +125,13 @@ function CreateAuctionPage() {
                       onClick={() => patch({ type })}
                       className={`space-y-2 rounded-2xl border-2 p-4 text-left transition ${
                         active
-                          ? 'border-accent bg-accent-soft'
-                          : 'border-border hover:border-accent/50'
+                          ? 'border-foreground bg-accent-soft'
+                          : 'border-border hover:border-foreground/50'
                       }`}
                     >
                       <TypeIcon
                         weight="duotone"
-                        className={`size-7 ${active ? 'text-accent' : 'text-muted'}`}
+                        className={`size-7 ${active ? 'text-brand' : 'text-muted'}`}
                       />
                       <p className="font-semibold">{t(`type.${type}`)}</p>
                       <p className="text-xs text-muted">{t(`type.${type}Desc`)}</p>
@@ -169,7 +169,7 @@ function CreateAuctionPage() {
                       onClick={() => patch({ category })}
                       className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${
                         form.category === category
-                          ? 'border-accent bg-accent text-accent-foreground'
+                          ? 'border-ink bg-accent text-accent-foreground shadow-[2px_2px_0_#0a0f0d]'
                           : 'border-border text-muted'
                       }`}
                     >
@@ -199,7 +199,7 @@ function CreateAuctionPage() {
                   min={1}
                   value={form.durationMin}
                   onChange={(e) => patch({ durationMin: Number(e.target.value) })}
-                  className="h-11 w-full rounded-xl border border-border bg-field px-3 font-semibold outline-none focus:border-accent"
+                  className="h-11 w-full rounded-xl border border-border bg-field px-3 font-semibold outline-none focus:border-foreground"
                 />
               </label>
               {form.type === 'english' && (
@@ -239,7 +239,7 @@ function CreateAuctionPage() {
                       min={5}
                       value={form.intervalSec}
                       onChange={(e) => patch({ intervalSec: Number(e.target.value) })}
-                      className="h-11 w-full rounded-xl border border-border bg-field px-3 font-semibold outline-none focus:border-accent"
+                      className="h-11 w-full rounded-xl border border-border bg-field px-3 font-semibold outline-none focus:border-foreground"
                     />
                   </label>
                 </>

@@ -14,7 +14,7 @@ const apply = (dark: boolean) => {
 export const useTheme = create<ThemeStore>()(
   persist(
     (set, get) => ({
-      dark: window.matchMedia('(prefers-color-scheme: dark)').matches,
+      dark: false,
       toggle: () => {
         apply(!get().dark)
         set({ dark: !get().dark })

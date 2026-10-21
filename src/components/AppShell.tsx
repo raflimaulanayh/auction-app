@@ -65,14 +65,14 @@ function SearchBox() {
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder={t('common.search')}
-        className="h-9 w-full rounded-full border border-border bg-surface pl-9 pr-4 text-sm outline-none transition focus:border-accent"
+        className="h-9 w-full rounded-full border border-border bg-surface pl-9 pr-4 text-sm outline-none transition focus:border-foreground"
       />
     </form>
   )
 }
 
 const navLink =
-  'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-muted transition hover:bg-surface-secondary hover:text-foreground [&.active]:bg-accent-soft [&.active]:text-accent'
+  'flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-transparent px-3.5 py-1.5 text-sm font-bold text-foreground/75 transition hover:text-foreground [&.active]:border-ink [&.active]:bg-lime [&.active]:text-ink [&.active]:shadow-[2px_2px_0_#0a0f0d]'
 
 /** Keeps every query fresh when the "server" (demo db) changes and surfaces outbid alerts. */
 function LiveSync() {
@@ -96,14 +96,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col">
       <LiveSync />
-      <div className="flex items-center justify-center gap-2 bg-accent px-4 py-1.5 text-center text-xs font-medium text-accent-foreground">
+      <div className="flex items-center justify-center gap-2 bg-forest px-4 py-1.5 text-center text-xs font-semibold text-lime">
         <FlaskIcon weight="bold" />
         {t('common.demoBanner')}
       </div>
-      <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4">
-          <Link to="/" className="flex items-center gap-2 text-lg font-extrabold tracking-tight">
-            <span className="grid size-8 place-items-center rounded-xl bg-accent text-accent-foreground">
+          <Link
+            to="/"
+            className="group flex items-center gap-2 text-xl font-extrabold tracking-[-0.04em]"
+          >
+            <span className="grid size-9 -rotate-6 place-items-center rounded-xl border-2 border-ink bg-lime text-ink shadow-[2px_2px_0_#0a0f0d] transition group-hover:rotate-6">
               <GavelIcon weight="fill" />
             </span>
             {t('common.appName')}
@@ -167,7 +170,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </div>
             ) : (
               <Link to="/login" className="ml-1">
-                <Button size="sm">{t('common.login')}</Button>
+                <Button size="sm" className="bg-ink text-paper dark:bg-lime dark:text-ink">
+                  {t('common.login')}
+                </Button>
               </Link>
             )}
           </div>
@@ -195,8 +200,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
       </header>
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">{children}</main>
-      <footer className="border-t border-border py-6 text-center text-xs text-muted">
-        © 2026 {t('common.appName')} — {t('common.tagline')}
+      <footer className="grid-forest mt-16 text-paper">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-12 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-2">
+            <p className="flex items-center gap-2 text-2xl font-extrabold tracking-[-0.04em]">
+              <span className="grid size-9 -rotate-6 place-items-center rounded-xl border-2 border-ink bg-lime text-ink">
+                <GavelIcon weight="fill" />
+              </span>
+              {t('common.appName')}
+            </p>
+            <p className="script -rotate-1 text-2xl text-lime">{t('common.tagline')}</p>
+          </div>
+          <p className="text-xs text-paper/60">© 2026 {t('common.appName')}</p>
+        </div>
       </footer>
     </div>
   )

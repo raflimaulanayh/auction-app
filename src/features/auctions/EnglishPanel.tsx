@@ -9,6 +9,7 @@ import {
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { bidIncrement, minNextBid, reserveMet } from '../../lib/auction-rules'
+import { celebrate } from '../../lib/celebrate'
 import { formatRupiah } from '../../lib/money'
 import type { AuctionDetail } from '../../services/auctionService'
 import { useBuyNow, usePlaceBid, useSetProxy } from '../../services/queries'
@@ -42,10 +43,14 @@ export function EnglishPanel({
 
   const submitBid = (value: number) =>
     placeBid.mutate(value, {
-      onSuccess: (r) =>
-        r.leaderId === user.id
-          ? toast.success(t('english.bidSuccess', { amount: formatRupiah(value) }))
-          : toast.warning(t('english.bidCountered')),
+      onSuccess: (r) => {
+        if (r.leaderId === user.id) {
+          celebrate()
+          toast.success(t('english.bidSuccess', { amount: formatRupiah(value) }))
+        } else {
+          toast.warning(t('english.bidCountered'))
+        }
+      },
     })
 
   const quick = [min, min + bidIncrement(min), min + bidIncrement(min) * 3]
@@ -90,8 +95,8 @@ export function EnglishPanel({
                   onClick={() => setAmount(q)}
                   className={`tabular rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
                     amount === q
-                      ? 'border-accent bg-accent-soft text-accent'
-                      : 'border-border hover:border-accent'
+                      ? 'border-foreground bg-accent-soft text-brand'
+                      : 'border-border hover:border-foreground'
                   }`}
                 >
                   {formatRupiah(q, true)}
@@ -114,7 +119,7 @@ export function EnglishPanel({
                 fullWidth
                 variant="secondary"
                 isPending={buyNow.isPending}
-                onPress={() => buyNow.mutate()}
+                onPress={() => buyNow.mutate(undefined, { onSuccess: celebrate })}
               >
                 {t('english.buyNow', { price: formatRupiah(auction.buyNowPrice) })}
               </Button>
@@ -123,7 +128,7 @@ export function EnglishPanel({
 
           <div className="space-y-3 rounded-2xl border border-border bg-surface-secondary p-4">
             <div className="flex items-center gap-2">
-              <RobotIcon weight="duotone" className="size-5 text-accent" />
+              <RobotIcon weight="duotone" className="size-5 text-brand" />
               <p className="font-semibold">{t('english.proxyTitle')}</p>
             </div>
             <p className="text-xs text-muted">{t('english.proxyDesc')}</p>

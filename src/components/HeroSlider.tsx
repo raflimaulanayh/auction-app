@@ -4,12 +4,22 @@ import {
   CaretLeftIcon,
   CaretRightIcon,
   EyeSlashIcon,
-  LightningIcon,
+  LockKeyIcon,
+  RobotIcon,
   TimerIcon,
   TrendDownIcon,
 } from '@phosphor-icons/react'
 import { Link } from '@tanstack/react-router'
-import { useEffect, useRef, useState } from 'react'
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  type MotionValue,
+  type Variants,
+} from 'motion/react'
+import { createContext, lazy, Suspense, useContext, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { dutchNextDropIn, dutchPrice } from '../lib/auction-rules'
 import { formatRupiah } from '../lib/money'
@@ -17,89 +27,173 @@ import { useNow } from '../lib/time'
 import type { AuctionSummary } from '../services/auctionService'
 import { useAuctions } from '../services/queries'
 import { AuctionVisual, Countdown } from './auction-bits'
+import { Marker } from './brand'
+import { AnimatedPrice } from './motion/AnimatedPrice'
 
-const AUTOPLAY_MS = 6000
+const GavelScene = lazy(() => import('./three/GavelScene'))
 
-const ctaPrimary = 'bg-white text-slate-900'
-const ctaGhost = 'text-white hover:bg-white/15'
+const AUTOPLAY_MS = 7000
 
-function Eyebrow({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
+type Tone = 'dark' | 'light'
+
+/** Whether the slide is on screen (drives entrance animations) + shared pointer position. */
+const SlideContext = createContext<{
+  active: boolean
+  px: MotionValue<number>
+  py: MotionValue<number>
+} | null>(null)
+
+const content: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } },
+}
+const item: Variants = {
+  hidden: { opacity: 0, y: 24, filter: 'blur(6px)' },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { type: 'spring', stiffness: 140, damping: 20 },
+  },
+}
+
+function Eyebrow({ children, tone }: { children: React.ReactNode; tone: Tone }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">
-      {icon} {children}
+    <span
+      className={`inline-flex items-center gap-2 text-xs font-bold ${tone === 'dark' ? 'text-lime' : 'text-brand'}`}
+    >
+      {children}
+      <span className="h-0.5 w-8 rounded-full bg-current" />
     </span>
   )
 }
 
 function SlideFrame({
-  gradient,
+  tone,
+  surface,
   children,
   aside,
 }: {
-  gradient: string
+  tone: Tone
+  surface: string
   children: React.ReactNode
   aside?: React.ReactNode
 }) {
+  const ctx = useContext(SlideContext)!
+  const state = ctx.active ? 'show' : 'hidden'
+  // Aside floats against the pointer for depth.
+  const ax = useTransform(ctx.px, (v) => v * -18)
+  const ay = useTransform(ctx.py, (v) => v * -12)
   return (
     <div
-      className={`relative h-full overflow-hidden bg-gradient-to-br ${gradient} px-6 py-12 text-white sm:px-12`}
+      className={`relative h-full overflow-hidden px-6 pb-16 pt-12 sm:px-12 ${surface} ${tone === 'dark' ? 'text-paper' : 'text-ink'}`}
     >
-      <div className="absolute -right-20 -top-20 size-80 rounded-full bg-white/10 blur-3xl" />
-      <div className="absolute -bottom-24 left-1/3 size-72 rounded-full bg-black/10 blur-3xl" />
-      <div className="relative grid h-full items-center gap-8 md:grid-cols-[1.4fr_1fr]">
-        <div className="max-w-2xl space-y-5">{children}</div>
-        {aside && <div className="hidden md:block">{aside}</div>}
+      <div className="hero-grain pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-overlay" />
+      <div className="relative grid h-full items-center gap-10 md:grid-cols-[1.25fr_1fr]">
+        <motion.div
+          variants={content}
+          initial="hidden"
+          animate={state}
+          className="max-w-2xl space-y-5"
+        >
+          {(Array.isArray(children) ? children : [children]).map((child, i) => (
+            <motion.div key={i} variants={item}>
+              {child}
+            </motion.div>
+          ))}
+        </motion.div>
+        {aside && (
+          <motion.div style={{ x: ax, y: ay }} className="hidden md:block">
+            {aside}
+          </motion.div>
+        )}
       </div>
     </div>
   )
 }
 
-function AuctionAside({
-  auction,
-  label,
-  price,
+/** Brutalist card that drops in tilted, like the reference site's step cards. */
+function TiltedCard({
+  children,
+  rotate,
+  delay = 0,
+  className = '',
 }: {
-  auction: AuctionSummary
-  label: string
-  price: number
+  children: React.ReactNode
+  rotate: number
+  delay?: number
+  className?: string
 }) {
+  const ctx = useContext(SlideContext)!
+  const hidden = { opacity: 0, y: 40, rotate: rotate * 3 }
   return (
-    <div className="ml-auto max-w-sm overflow-hidden rounded-3xl bg-white/10 shadow-2xl ring-1 ring-white/20 backdrop-blur">
-      <AuctionVisual category={auction.category} className="aspect-[16/10]" />
-      <div className="space-y-1 p-5">
-        <p className="line-clamp-1 text-sm font-semibold text-white/90">{auction.title}</p>
-        <p className="text-xs text-white/70">{label}</p>
-        <p key={price} className="flash tabular rounded-md text-2xl font-extrabold">
-          {formatRupiah(price)}
-        </p>
-      </div>
-    </div>
+    <motion.div
+      initial={hidden}
+      animate={ctx.active ? { opacity: 1, y: 0, rotate } : hidden}
+      transition={{ type: 'spring', stiffness: 110, damping: 14, delay: 0.25 + delay }}
+      whileHover={{ rotate: 0, scale: 1.03 }}
+      className={`rounded-2xl border-2 border-ink bg-white text-ink shadow-[5px_5px_0_#0a0f0d] ${className}`}
+    >
+      {children}
+    </motion.div>
   )
 }
 
-function BrandSlide() {
-  const { t } = useTranslation()
+function StepPill({ children }: { children: React.ReactNode }) {
   return (
-    <SlideFrame gradient="from-indigo-600 via-violet-600 to-fuchsia-600">
-      <Eyebrow icon={<LightningIcon weight="fill" className="text-amber-300" />}>
-        {t('common.tagline')}
-      </Eyebrow>
-      <h1 className="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-        {t('home.heroTitle')}
+    <span className="inline-block rounded-full border-2 border-ink bg-lime px-2.5 py-0.5 text-[11px] font-extrabold text-ink">
+      {children}
+    </span>
+  )
+}
+
+function useDesktop3d() {
+  const reduced = useReducedMotion()
+  const [wide] = useState(() => window.matchMedia('(min-width: 768px)').matches)
+  return wide && !reduced
+}
+
+function BrandSlide({ liveCount }: { liveCount: number }) {
+  const { t } = useTranslation()
+  const ctx = useContext(SlideContext)!
+  const show3d = useDesktop3d()
+  return (
+    <SlideFrame
+      tone="dark"
+      surface="grid-forest"
+      aside={
+        show3d ? (
+          <div className="relative -my-10">
+            <Suspense fallback={<div className="h-[22rem]" />}>
+              <GavelScene active={ctx.active} />
+            </Suspense>
+            <p className="script absolute bottom-3 right-6 -rotate-3 text-xl text-lime">
+              {t('hero.tapGavel')}
+            </p>
+          </div>
+        ) : undefined
+      }
+    >
+      <Eyebrow tone="dark">{t('common.tagline')}</Eyebrow>
+      <h1 className="text-5xl font-extrabold leading-[0.98] tracking-[-0.045em] sm:text-6xl">
+        {t('home.heroTitleLead')} <Marker>{t('home.heroTitleMark')}</Marker>
       </h1>
-      <p className="text-base text-white/80 sm:text-lg">{t('home.heroSubtitle')}</p>
-      <div className="flex flex-wrap gap-3">
+      <p className="max-w-xl text-base text-paper/70 sm:text-lg">{t('home.heroSubtitle')}</p>
+      <div className="flex flex-wrap items-center gap-5">
         <Link to="/auctions">
-          <Button size="lg" className={ctaPrimary}>
+          <Button size="lg">
             {t('home.explore')} <ArrowRightIcon weight="bold" />
           </Button>
         </Link>
-        <Link to="/sell/new">
-          <Button size="lg" variant="ghost" className={ctaGhost}>
-            {t('home.startSelling')}
-          </Button>
-        </Link>
+        <a
+          href="#how"
+          className="group inline-flex items-center gap-2 font-extrabold text-paper underline decoration-lime decoration-[3px] underline-offset-[6px]"
+        >
+          {t('hero.peekCta')}
+          <ArrowRightIcon weight="bold" className="transition group-hover:translate-x-1" />
+        </a>
       </div>
+      <p className="text-xs text-paper/60">{t('hero.trust', { count: liveCount })}</p>
     </SlideFrame>
   )
 }
@@ -108,34 +202,56 @@ function EndingSlide({ auction }: { auction: AuctionSummary }) {
   const { t } = useTranslation()
   return (
     <SlideFrame
-      gradient="from-sky-600 via-blue-600 to-indigo-700"
+      tone="light"
+      surface="bg-paper grid-paper"
       aside={
-        <AuctionAside
-          auction={auction}
-          label={t('auction.currentBid')}
-          price={auction.currentPrice}
-        />
+        <div className="relative mx-auto max-w-sm">
+          <TiltedCard rotate={2} className="overflow-hidden">
+            <AuctionVisual
+              category={auction.category}
+              className="aspect-[16/10] border-b-2 border-ink"
+            />
+            <div className="space-y-1 p-5">
+              <StepPill>{t('auction.currentBid')}</StepPill>
+              <p className="pt-1 text-2xl font-extrabold">
+                <AnimatedPrice value={auction.currentPrice} />
+              </p>
+              <p className="line-clamp-1 text-sm text-muted">{auction.title}</p>
+            </div>
+          </TiltedCard>
+          <div className="absolute -bottom-14 -left-6">
+            <TiltedCard
+              rotate={-4}
+              delay={0.25}
+              className="flex items-center gap-2 bg-lime px-4 py-3"
+            >
+              <RobotIcon weight="duotone" className="size-5" />
+              <span className="script text-xl text-ink">{t('hero.autoBidSticky')}</span>
+            </TiltedCard>
+          </div>
+        </div>
       }
     >
-      <Eyebrow icon={<TimerIcon weight="fill" className="text-rose-300" />}>
-        {t('hero.endingEyebrow')}
-      </Eyebrow>
-      <h2 className="line-clamp-2 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
+      <p className="script -rotate-1 text-[1.7rem]">{t('hero.endingNote')}</p>
+      <h2 className="line-clamp-2 text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] sm:text-5xl">
         {auction.title}
       </h2>
-      <div className="flex flex-wrap items-end gap-8">
-        <div>
-          <p className="text-xs text-white/70">{t('auction.currentBid')}</p>
-          <p className="tabular text-3xl font-extrabold">{formatRupiah(auction.currentPrice)}</p>
+      <div className="flex flex-wrap items-end gap-5">
+        <div className="rounded-2xl border-2 border-ink bg-white px-4 py-3 shadow-[4px_4px_0_#0a0f0d]">
+          <p className="text-xs font-bold text-muted">{t('auction.currentBid')}</p>
+          <p className="text-3xl font-extrabold">
+            <AnimatedPrice value={auction.currentPrice} from={auction.startingPrice} />
+          </p>
         </div>
-        <div>
-          <p className="text-xs text-white/70">{t('auction.endsIn')}</p>
+        <div className="rounded-2xl border-2 border-ink bg-ink px-4 py-3 text-lime shadow-[4px_4px_0_#d6ee30]">
+          <p className="flex items-center gap-1 text-xs font-bold text-paper/70">
+            <TimerIcon weight="bold" /> {t('auction.endsIn')}
+          </p>
           <Countdown auction={auction} large />
         </div>
       </div>
-      <p className="text-sm text-white/80">{t('auction.antiSnipingInfo')}</p>
       <Link to="/auctions/$auctionId" params={{ auctionId: auction.id }}>
-        <Button size="lg" className={ctaPrimary}>
+        <Button size="lg">
           {t('hero.joinBid')} <ArrowRightIcon weight="bold" />
         </Button>
       </Link>
@@ -147,33 +263,51 @@ function DutchSlide({ auction }: { auction: AuctionSummary }) {
   const { t } = useTranslation()
   const now = useNow()
   const price = dutchPrice(auction, now)
+  const floor = auction.floorPrice ?? 0
   const dropIn = Math.ceil(dutchNextDropIn(auction, now) / 1000)
+  const dropped =
+    ((auction.startingPrice - price) / Math.max(1, auction.startingPrice - floor)) * 100
   return (
     <SlideFrame
-      gradient="from-amber-500 via-orange-600 to-rose-600"
-      aside={<AuctionAside auction={auction} label={t('dutch.priceNow')} price={price} />}
+      tone="light"
+      surface="bg-lime [--grid-line:rgb(10_15_13/0.08)] grid-paper"
+      aside={
+        <TiltedCard rotate={-2} className="mx-auto max-w-sm space-y-4 p-6">
+          <div className="flex items-center justify-between">
+            <StepPill>{t('dutch.priceNow')}</StepPill>
+            <TrendDownIcon weight="bold" className="size-6" />
+          </div>
+          <p className="text-4xl font-extrabold">
+            <AnimatedPrice value={price} from={auction.startingPrice} />
+          </p>
+          <div className="h-3 overflow-hidden rounded-full border-2 border-ink bg-paper">
+            <motion.div
+              className="h-full bg-ink"
+              animate={{ width: `${dropped}%` }}
+              transition={{ type: 'spring', stiffness: 60, damping: 15 }}
+            />
+          </div>
+          <div className="flex justify-between text-xs font-bold text-muted">
+            <span>{formatRupiah(auction.startingPrice, true)}</span>
+            <span>
+              {t('dutch.floor')} {formatRupiah(floor, true)}
+            </span>
+          </div>
+        </TiltedCard>
+      }
     >
-      <Eyebrow icon={<TrendDownIcon weight="bold" />}>{t('hero.dutchEyebrow')}</Eyebrow>
-      <h2 className="line-clamp-2 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
+      <p className="script -rotate-1 text-[1.7rem] text-ink/80">{t('hero.dutchNote')}</p>
+      <h2 className="line-clamp-2 text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] sm:text-5xl">
         {auction.title}
       </h2>
-      <div className="flex flex-wrap items-end gap-8">
-        <div>
-          <p className="text-xs text-white/70">{t('dutch.priceNow')}</p>
-          <p key={price} className="flash tabular rounded-md text-3xl font-extrabold">
-            {formatRupiah(price)}
-          </p>
-        </div>
-        <div>
-          <p className="text-xs text-white/70">
-            {t('dutch.nextDrop', { amount: formatRupiah(auction.decrement ?? 0, true) })}
-          </p>
-          <p className="tabular text-3xl font-extrabold">{dropIn}s</p>
-        </div>
-      </div>
-      <p className="text-sm text-white/80">{t('hero.dutchHint')}</p>
+      <p className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-white px-4 py-2 text-sm font-extrabold shadow-[3px_3px_0_#0a0f0d]">
+        <TrendDownIcon weight="bold" />
+        {t('dutch.nextDrop', { amount: formatRupiah(auction.decrement ?? 0, true) })}
+        <span className="tabular">{dropIn}s</span>
+      </p>
+      <p className="max-w-lg text-ink/70">{t('hero.dutchHint')}</p>
       <Link to="/auctions/$auctionId" params={{ auctionId: auction.id }}>
-        <Button size="lg" className={ctaPrimary}>
+        <Button size="lg" className="bg-ink text-lime">
           {t('hero.grabIt')} <ArrowRightIcon weight="bold" />
         </Button>
       </Link>
@@ -183,41 +317,47 @@ function DutchSlide({ auction }: { auction: AuctionSummary }) {
 
 function SealedSlide({ auction }: { auction?: AuctionSummary }) {
   const { t } = useTranslation()
+  const steps = [t('hero.sealedStep1'), t('hero.sealedStep2'), t('hero.sealedStep3')]
   return (
     <SlideFrame
-      gradient="from-emerald-600 via-teal-600 to-cyan-700"
+      tone="dark"
+      surface="grid-forest"
       aside={
-        <div className="ml-auto max-w-sm space-y-3 rounded-3xl bg-white/10 p-6 ring-1 ring-white/20 backdrop-blur">
-          {[
-            ['1', t('hero.sealedStep1')],
-            ['2', t('hero.sealedStep2')],
-            ['3', t('hero.sealedStep3')],
-          ].map(([n, text]) => (
-            <div key={n} className="flex items-start gap-3">
-              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-white text-sm font-bold text-teal-700">
-                {n}
-              </span>
-              <p className="text-sm text-white/90">{text}</p>
+        <div className="relative mx-auto flex max-w-sm flex-col gap-5">
+          {steps.map((text, i) => (
+            <div key={text} className={i === 1 ? 'ml-10' : ''}>
+              <TiltedCard
+                rotate={i % 2 ? 2 : -2}
+                delay={i * 0.15}
+                className={`space-y-2 p-4 ${i === 1 ? 'bg-lime' : ''}`}
+              >
+                <StepPill>
+                  {t('hero.step')} {i + 1}
+                </StepPill>
+                <p className="text-sm font-bold leading-snug">{text}</p>
+              </TiltedCard>
             </div>
           ))}
         </div>
       }
     >
-      <Eyebrow icon={<EyeSlashIcon weight="bold" />}>{t('type.sealed')}</Eyebrow>
-      <h2 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
-        {t('hero.sealedTitle')}
+      <Eyebrow tone="dark">
+        <EyeSlashIcon weight="bold" /> {t('type.sealed')}
+      </Eyebrow>
+      <h2 className="text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] sm:text-5xl">
+        {t('hero.sealedTitleLead')} <Marker>{t('hero.sealedTitleMark')}</Marker>
       </h2>
-      <p className="text-base text-white/80 sm:text-lg">{t('sealed.vickreyInfo')}</p>
+      <p className="max-w-xl text-paper/70 sm:text-lg">{t('sealed.vickreyInfo')}</p>
       <Link
         {...(auction
           ? { to: '/auctions/$auctionId', params: { auctionId: auction.id } }
           : { to: '/auctions', search: { type: 'sealed' } })}
       >
-        <Button size="lg" className={ctaPrimary}>
+        <Button size="lg">
+          <LockKeyIcon weight="bold" />
           {auction
             ? t('hero.sealedCta', { title: auction.title.split(' ').slice(0, 3).join(' ') })
             : t('common.seeAll')}
-          <ArrowRightIcon weight="bold" />
         </Button>
       </Link>
     </SlideFrame>
@@ -232,33 +372,48 @@ export function HeroSlider() {
   const sealed = live.find((a) => a.type === 'sealed')
 
   const slides = [
-    { id: 'brand', node: <BrandSlide /> },
-    english && { id: 'ending', node: <EndingSlide auction={english} /> },
-    dutch && { id: 'dutch', node: <DutchSlide auction={dutch} /> },
-    { id: 'sealed', node: <SealedSlide auction={sealed} /> },
-  ].filter((s): s is { id: string; node: React.JSX.Element } => !!s)
+    { id: 'brand', tone: 'dark' as Tone, node: <BrandSlide liveCount={live.length} /> },
+    english && { id: 'ending', tone: 'light' as Tone, node: <EndingSlide auction={english} /> },
+    dutch && { id: 'dutch', tone: 'light' as Tone, node: <DutchSlide auction={dutch} /> },
+    { id: 'sealed', tone: 'dark' as Tone, node: <SealedSlide auction={sealed} /> },
+  ].filter((s): s is { id: string; tone: Tone; node: React.JSX.Element } => !!s)
 
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const current = index % slides.length
+  const tone = slides[current]?.tone ?? 'dark'
   const go = (i: number) => setIndex((i + slides.length) % slides.length)
 
-  const reducedMotion = useRef(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const reducedMotion = useReducedMotion()
   useEffect(() => {
-    if (paused || reducedMotion.current) return
+    if (paused || reducedMotion) return
     const id = setTimeout(() => setIndex((i) => (i + 1) % slides.length), AUTOPLAY_MS)
     return () => clearTimeout(id)
-  }, [index, paused, slides.length])
+  }, [index, paused, slides.length, reducedMotion])
 
   const touchX = useRef<number | null>(null)
+  const px = useSpring(useMotionValue(0), { stiffness: 60, damping: 20 })
+  const py = useSpring(useMotionValue(0), { stiffness: 60, damping: 20 })
+
+  const arrow =
+    'absolute top-1/2 z-10 hidden size-11 -translate-y-1/2 place-items-center rounded-full border-2 border-ink bg-white text-ink opacity-0 shadow-[3px_3px_0_#0a0f0d] transition group-hover:opacity-100 sm:grid'
 
   return (
     <section
       aria-roledescription="carousel"
       aria-label={t('hero.label')}
-      className="group relative overflow-hidden rounded-3xl"
+      className="group relative overflow-hidden rounded-[2rem] border-2 border-ink shadow-[6px_6px_0_#0a0f0d] dark:shadow-[6px_6px_0_#000]"
       onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseLeave={() => {
+        setPaused(false)
+        px.set(0)
+        py.set(0)
+      }}
+      onMouseMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect()
+        px.set((e.clientX - r.left) / r.width - 0.5)
+        py.set((e.clientY - r.top) / r.height - 0.5)
+      }}
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
       onKeyDown={(e) => {
@@ -285,9 +440,11 @@ export function HeroSlider() {
             aria-label={`${i + 1} / ${slides.length}`}
             aria-hidden={i !== current}
             inert={i !== current}
-            className="min-h-[26rem] w-full shrink-0"
+            className="min-h-[30rem] w-full shrink-0"
           >
-            {s.node}
+            <SlideContext.Provider value={{ active: i === current, px, py }}>
+              {s.node}
+            </SlideContext.Provider>
           </div>
         ))}
       </div>
@@ -295,31 +452,33 @@ export function HeroSlider() {
       <button
         aria-label={t('hero.prev')}
         onClick={() => go(current - 1)}
-        className="absolute left-3 top-1/2 hidden size-10 -translate-y-1/2 place-items-center rounded-full bg-black/25 text-white opacity-0 backdrop-blur transition hover:bg-black/40 group-hover:opacity-100 sm:grid"
+        className={`${arrow} left-4`}
       >
         <CaretLeftIcon weight="bold" />
       </button>
       <button
         aria-label={t('hero.next')}
         onClick={() => go(current + 1)}
-        className="absolute right-3 top-1/2 hidden size-10 -translate-y-1/2 place-items-center rounded-full bg-black/25 text-white opacity-0 backdrop-blur transition hover:bg-black/40 group-hover:opacity-100 sm:grid"
+        className={`${arrow} right-4`}
       >
         <CaretRightIcon weight="bold" />
       </button>
 
-      <div className="absolute bottom-5 left-6 flex gap-2 sm:left-12">
+      <div className="absolute bottom-5 left-6 flex items-center gap-2 sm:left-12">
         {slides.map((s, i) => (
           <button
             key={s.id}
             aria-label={`${i + 1} / ${slides.length}`}
             aria-current={i === current}
             onClick={() => go(i)}
-            className={`relative h-1.5 overflow-hidden rounded-full bg-white/30 transition-all ${i === current ? 'w-10' : 'w-4 hover:bg-white/50'}`}
+            className={`relative h-2 overflow-hidden rounded-full transition-all ${
+              tone === 'dark' ? 'bg-paper/25' : 'bg-ink/20'
+            } ${i === current ? 'w-12' : 'w-4'}`}
           >
             {i === current && (
               <span
                 key={`${index}-${paused}`}
-                className="hero-progress absolute inset-y-0 left-0 rounded-full bg-white"
+                className={`hero-progress absolute inset-y-0 left-0 rounded-full ${tone === 'dark' ? 'bg-lime' : 'bg-ink'}`}
                 style={{
                   animationDuration: `${AUTOPLAY_MS}ms`,
                   animationPlayState: paused ? 'paused' : 'running',

@@ -64,7 +64,7 @@ function MyBidsPage() {
               <Link
                 to="/auctions/$auctionId"
                 params={{ auctionId: auction.id }}
-                className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-3 transition hover:border-accent"
+                className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-3 transition hover:border-foreground"
               >
                 <AuctionVisual
                   category={auction.category}

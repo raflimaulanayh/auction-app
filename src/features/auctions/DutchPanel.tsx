@@ -3,6 +3,7 @@ import { ShoppingCartIcon, TrendDownIcon } from '@phosphor-icons/react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { dutchNextDropIn, dutchPrice } from '../../lib/auction-rules'
+import { celebrate } from '../../lib/celebrate'
 import { formatRupiah } from '../../lib/money'
 import { useNow } from '../../lib/time'
 import type { AuctionDetail } from '../../services/auctionService'
@@ -68,7 +69,7 @@ export function DutchPanel({ detail, live }: { detail: AuctionDetail; live: bool
           onPress={() => {
             if (!confirming) return setConfirming(true)
             setConfirming(false)
-            buyNow.mutate()
+            buyNow.mutate(undefined, { onSuccess: celebrate })
           }}
         >
           <ShoppingCartIcon weight="fill" />

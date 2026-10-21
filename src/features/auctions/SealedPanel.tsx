@@ -1,7 +1,9 @@
 import { Button, Chip, toast } from '@heroui/react'
 import { CrownIcon, EnvelopeSimpleIcon, LockKeyIcon, SealCheckIcon } from '@phosphor-icons/react'
-import { useState } from 'react'
+import { motion } from 'motion/react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { celebrate } from '../../lib/celebrate'
 import { formatRupiah } from '../../lib/money'
 import type { AuctionDetail } from '../../services/auctionService'
 import { useSubmitSealed } from '../../services/queries'
@@ -21,13 +23,17 @@ export function SealedPanel({
   const { auction, myBid, sealedResult } = detail
   const [amount, setAmount] = useState(myBid?.amount ?? auction.startingPrice)
   const submit = useSubmitSealed(auction.id)
+  const wonReveal = !!user && sealedResult?.winnerId === user.id
+  useEffect(() => {
+    if (wonReveal) celebrate()
+  }, [wonReveal, auction.id])
 
   if (sealedResult) {
     const youWon = sealedResult.winnerId === user?.id
     return (
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <EnvelopeSimpleIcon weight="duotone" className="size-5 text-accent" />
+          <EnvelopeSimpleIcon weight="duotone" className="size-5 text-brand" />
           <p className="font-semibold">{t('sealed.reveal')}</p>
         </div>
         {sealedResult.winnerId && (
@@ -52,8 +58,18 @@ export function SealedPanel({
         )}
         <ol className="space-y-2">
           {sealedResult.ranking.map((b, i) => (
-            <li
+            <motion.li
               key={b.id}
+              // Bids flip open one by one, lowest rank first, like envelopes being opened.
+              initial={{ opacity: 0, rotateX: -90, y: -8 }}
+              animate={{ opacity: 1, rotateX: 0, y: 0 }}
+              transition={{
+                type: 'spring',
+                stiffness: 160,
+                damping: 18,
+                delay: 0.25 + (sealedResult.ranking.length - 1 - i) * 0.35,
+              }}
+              style={{ transformPerspective: 600 }}
               className="flex items-center justify-between rounded-xl border border-border px-3 py-2 text-sm"
             >
               <span className="flex items-center gap-2">
@@ -62,10 +78,10 @@ export function SealedPanel({
                 </span>
                 {b.userId === user?.id ? t('common.you') : b.userName}
               </span>
-              <span className={`tabular font-semibold ${i === 1 ? 'text-accent' : ''}`}>
+              <span className={`tabular font-semibold ${i === 1 ? 'text-brand' : ''}`}>
                 {formatRupiah(b.amount)}
               </span>
-            </li>
+            </motion.li>
           ))}
         </ol>
         <p className="text-xs text-muted">{t('sealed.vickreyInfo')}</p>
@@ -76,7 +92,7 @@ export function SealedPanel({
   return (
     <div className="space-y-4">
       <div className="flex items-start gap-3 rounded-xl bg-surface-secondary p-3 text-sm">
-        <LockKeyIcon weight="duotone" className="mt-0.5 size-5 shrink-0 text-accent" />
+        <LockKeyIcon weight="duotone" className="mt-0.5 size-5 shrink-0 text-brand" />
         <p className="text-muted">{t('sealed.hiddenInfo')}</p>
       </div>
       {myBid && (

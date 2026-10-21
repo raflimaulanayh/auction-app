@@ -4,7 +4,78 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Stack Sans Headline', ui-sans-serif, system-ui, sans-serif;
+  --font-script: 'Caveat', cursive;
+  --color-brand: var(--brand);
+  --color-ink: #0a0f0d;
+  --color-paper: #f3f6f2;
+  --color-forest: #122922;
+  --color-lime: #d6ee30;
+  --color-lime-soft: #ecf7a0;
+}
+
+/* ---------- Theme tokens (overrides HeroUI's layered defaults) ---------- */
+
+:root,
+.light,
+[data-theme='light'] {
+  --background: #f3f6f2;
+  --foreground: #0a0f0d;
+  --surface: #ffffff;
+  --surface-secondary: #eaf0e8;
+  --surface-tertiary: #dde7de;
+  --overlay: #ffffff;
+  --muted: #4a5b52;
+  --default: #e3eae1;
+  --default-foreground: #0a0f0d;
+  --field-background: #ffffff;
+  --field-foreground: #0a0f0d;
+  --field-border: color-mix(in oklab, #122922 28%, transparent);
+  --border: color-mix(in oklab, #122922 16%, transparent);
+  --separator: color-mix(in oklab, #122922 12%, transparent);
+  --accent: #d6ee30;
+  --accent-foreground: #0a0f0d;
+  --accent-soft: #ecf7a0;
+  --accent-soft-foreground: #0a0f0d;
+  --success: #1d8a5a;
+  --focus: #1d6b48;
+  --radius: 0.75rem;
+
+  --brand: #1d6b48;
+  --ink-line: #0a0f0d;
+  --ink-shadow: #0a0f0d;
+  --card-shadow: #dde7de;
+  --grid-line: color-mix(in oklab, #122922 7%, transparent);
+}
+
+.dark,
+[data-theme='dark'] {
+  --background: #0a0f0d;
+  --foreground: #f3f6f2;
+  --surface: #11221c;
+  --surface-secondary: #183329;
+  --surface-tertiary: #1f3d31;
+  --overlay: #11221c;
+  --muted: #a7c3b4;
+  --default: #183329;
+  --default-foreground: #f3f6f2;
+  --field-background: #0d1b16;
+  --field-foreground: #f3f6f2;
+  --field-border: #2f5242;
+  --border: #23402f;
+  --separator: #1d3529;
+  --accent: #d6ee30;
+  --accent-foreground: #0a0f0d;
+  --accent-soft: #2c3d0c;
+  --accent-soft-foreground: #e4f57a;
+  --success: #3fbf7f;
+  --focus: #c9ff5c;
+
+  --brand: #c9ff5c;
+  --ink-line: #35594a;
+  --ink-shadow: #000000;
+  --card-shadow: #030605;
+  --grid-line: color-mix(in oklab, #c9ff5c 6%, transparent);
 }
 
 html,
@@ -13,13 +84,99 @@ body {
   font-family: var(--font-sans);
 }
 
+h1,
+h2,
+h3 {
+  letter-spacing: -0.03em;
+}
+
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
+/* ---------- Neo-brutalist component skin ---------- */
+
+.button {
+  font-weight: 800;
+  border: 2px solid var(--ink-line);
+  box-shadow: 3px 3px 0 var(--ink-shadow);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+.button:hover:not([data-disabled]) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink-shadow);
+}
+.button[data-pressed]:not([data-disabled]),
+.button:active:not([data-disabled]) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ink-shadow);
+}
+.button--secondary,
+.button--tertiary {
+  background: var(--surface);
+  color: var(--foreground);
+}
+.button--ghost,
+.button--ghost:hover:not([data-disabled]),
+.button--ghost[data-pressed]:not([data-disabled]) {
+  border-color: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+.card {
+  border: 2px solid var(--ink-line);
+  box-shadow: 6px 6px 0 var(--card-shadow);
+}
+.card--secondary {
+  background: var(--surface-secondary);
+}
+
+.chip {
+  font-weight: 700;
+}
+
+.input,
+.textarea {
+  border-width: 2px;
+}
+
+/* ---------- Signature utilities ---------- */
+
+.brutal {
+  border: 2px solid var(--ink-line);
+  box-shadow: 4px 4px 0 var(--ink-shadow);
+}
+
+.grid-paper {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.grid-forest {
+  background-color: #122922;
+  background-image:
+    linear-gradient(rgb(201 255 92 / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(201 255 92 / 0.06) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+.script {
+  font-family: var(--font-script);
+  color: var(--brand);
+  font-weight: 600;
+}
+
+/* ---------- Animations ---------- */
+
 @keyframes flash-bid {
   from {
-    background-color: color-mix(in oklab, var(--color-success) 25%, transparent);
+    background-color: color-mix(in oklab, var(--color-lime) 55%, transparent);
   }
   to {
     background-color: transparent;
@@ -45,9 +202,34 @@ body {
   animation-fill-mode: forwards;
 }
 
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+.caret::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.1em;
+  background: currentColor;
+  animation: caret 1s steps(1) infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-progress {
     animation: none;
     width: 100%;
   }
+  .caret::after {
+    animation: none;
+  }
+}
+
+/* Film grain on hero slides for a printed, premium texture. */
+.hero-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }

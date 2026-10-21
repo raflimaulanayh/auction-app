@@ -13,6 +13,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { AuctionVisual, Countdown, StatusChip, TypeChip } from '../../components/auction-bits'
 import { EmptyState } from '../../components/AuctionCard'
+import { AnimatedPrice } from '../../components/motion/AnimatedPrice'
 import { DutchPanel } from '../../features/auctions/DutchPanel'
 import { EnglishPanel } from '../../features/auctions/EnglishPanel'
 import { SealedPanel } from '../../features/auctions/SealedPanel'
@@ -46,8 +47,13 @@ function PriceBlock({ detail }: { detail: AuctionDetail }) {
     <div className="grid grid-cols-2 gap-4">
       <div>
         <p className="text-xs text-muted">{label}</p>
-        <p key={price} className="flash tabular rounded-md text-3xl font-extrabold tracking-tight">
-          {formatRupiah(price)}
+        <p className="relative text-3xl font-extrabold tracking-tight">
+          <span key={price} aria-hidden className="flash absolute inset-0 -mx-1 rounded-md" />
+          <AnimatedPrice
+            className="relative"
+            value={price}
+            from={auction.type === 'dutch' ? auction.startingPrice : auction.startingPrice * 0.9}
+          />
         </p>
       </div>
       <div className="text-right">
@@ -142,7 +148,7 @@ function BidHistory({ detail }: { detail: AuctionDetail }) {
                       {b.userId === user?.id ? t('common.you') : b.userName}
                     </span>
                     {b.isProxy && (
-                      <span className="ml-1.5 inline-flex items-center gap-0.5 rounded bg-accent-soft px-1.5 text-[10px] font-semibold uppercase text-accent">
+                      <span className="ml-1.5 inline-flex items-center gap-0.5 rounded bg-accent-soft px-1.5 text-[10px] font-semibold uppercase text-brand">
                         <RobotIcon /> {t('auction.auto')}
                       </span>
                     )}
@@ -224,7 +230,10 @@ function AuctionPage() {
       </Link>
       <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
         <div className="space-y-6">
-          <AuctionVisual category={auction.category} className="aspect-[4/3] rounded-3xl" />
+          <AuctionVisual
+            category={auction.category}
+            className="aspect-[4/3] rounded-3xl border-2 border-ink shadow-[6px_6px_0_var(--card-shadow)]"
+          />
           <Card>
             <Card.Header>
               <Card.Title>{t('auction.description')}</Card.Title>
@@ -232,7 +241,7 @@ function AuctionPage() {
             <Card.Content className="gap-4">
               <p className="text-sm leading-relaxed text-muted">{auction.description}</p>
               <div className="flex items-center gap-3 rounded-xl bg-surface-secondary p-3">
-                <StorefrontIcon weight="duotone" className="size-6 text-accent" />
+                <StorefrontIcon weight="duotone" className="size-6 text-brand" />
                 <div>
                   <p className="text-xs text-muted">{t('auction.seller')}</p>
                   <p className="text-sm font-semibold">{auction.sellerName}</p>
