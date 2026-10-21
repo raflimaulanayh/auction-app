@@ -243,7 +243,7 @@ function AuctionPage() {
         </div>
 
         <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-          <Card className="p-2">
+          <Card className="p-5 sm:p-6">
             <Card.Header className="gap-3">
               <div className="flex flex-wrap items-center gap-2">
                 <StatusChip auction={auction} />

@@ -110,8 +110,8 @@ function CreateAuctionPage() {
         ))}
       </ol>
 
-      <Card className="p-2">
-        <Card.Content className="gap-5 p-4">
+      <Card className="p-6 sm:p-8">
+        <Card.Content className="gap-5">
           {step === 0 && (
             <div className="space-y-3">
               <p className="font-semibold">{t('seller.chooseType')}</p>
@@ -150,7 +150,7 @@ function CreateAuctionPage() {
                 isInvalid={showErrors && form.title.trim().length < 3}
               >
                 <Label>{t('seller.itemTitle')}</Label>
-                <Input placeholder="Canon EOS R6 Mark II" />
+                <Input variant="secondary" placeholder="Canon EOS R6 Mark II" />
               </TextField>
               <TextField
                 value={form.description}
@@ -158,7 +158,7 @@ function CreateAuctionPage() {
                 isInvalid={showErrors && !form.description.trim()}
               >
                 <Label>{t('seller.itemDesc')}</Label>
-                <TextArea rows={4} />
+                <TextArea variant="secondary" rows={4} />
               </TextField>
               <div className="space-y-1.5">
                 <p className="text-sm font-medium">{t('seller.itemCategory')}</p>
@@ -286,7 +286,7 @@ function CreateAuctionPage() {
             </div>
           )}
         </Card.Content>
-        <Card.Footer className="justify-between p-4">
+        <Card.Footer className="justify-between pt-4">
           <Button variant="ghost" isDisabled={step === 0} onPress={() => setStep((s) => s - 1)}>
             <ArrowLeftIcon /> {t('common.back')}
           </Button>

@@ -34,14 +34,14 @@ function LoginPage() {
 
   return (
     <div className="mx-auto grid max-w-4xl gap-6 md:grid-cols-2">
-      <Card className="p-2">
-        <Card.Header>
+      <Card className="p-6 sm:p-8">
+        <Card.Header className="mb-2 gap-1.5">
           <Card.Title className="text-2xl font-bold">{t('auth.title')}</Card.Title>
           <Card.Description>{t('auth.subtitle')}</Card.Description>
         </Card.Header>
         <Card.Content>
           <form
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-5"
             onSubmit={(e) => {
               e.preventDefault()
               void signIn(email)
@@ -57,12 +57,12 @@ function LoginPage() {
               type="email"
             >
               <Label>{t('auth.email')}</Label>
-              <Input placeholder="nama@email.com" />
+              <Input variant="secondary" placeholder="nama@email.com" />
               <FieldError>{t('auth.invalidEmail')}</FieldError>
             </TextField>
             <TextField value={password} onChange={setPassword} type="password">
               <Label>{t('auth.password')}</Label>
-              <Input placeholder="••••••••" />
+              <Input variant="secondary" placeholder="••••••••" />
             </TextField>
             <Button type="submit" fullWidth isPending={loading === email && !!email}>
               {t('auth.submit')}
@@ -71,7 +71,7 @@ function LoginPage() {
         </Card.Content>
       </Card>
 
-      <Card variant="secondary" className="p-2">
+      <Card variant="secondary" className="p-6 sm:p-8">
         <Card.Header>
           <Card.Title>{t('auth.quick')}</Card.Title>
         </Card.Header>
