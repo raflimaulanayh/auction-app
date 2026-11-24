@@ -80,7 +80,21 @@ function LiveSync() {
   const qc = useQueryClient()
   const { t } = useTranslation()
   const userId = useSession((s) => s.user?.id)
-  useEffect(() => useDb.subscribe(() => void qc.invalidateQueries({ queryKey: keys.all })), [qc])
+  useEffect(
+    () =>
+      useDb.subscribe((state, prev) => {
+        // Ignore the demo-clock heartbeat; refetch only when auction data changed.
+        if (
+          state.auctions !== prev.auctions ||
+          state.bids !== prev.bids ||
+          state.proxies !== prev.proxies ||
+          state.watchlist !== prev.watchlist
+        ) {
+          void qc.invalidateQueries({ queryKey: keys.all })
+        }
+      }),
+    [qc],
+  )
   useRealtime((e) => {
     if (e.type === 'Outbid' && e.userId === userId) {
       toast.warning(t('english.outbidToast', { title: e.title, amount: formatRupiah(e.amount) }))

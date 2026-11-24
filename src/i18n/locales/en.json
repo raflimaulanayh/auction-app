@@ -288,5 +288,12 @@
     "errorCard": "don’t worry, your data is safe",
     "retry": "Try again",
     "details": "Error details (dev mode)"
+  },
+  "activity": {
+    "note": "it’s getting busy",
+    "title": "Latest activity",
+    "live": "Real-time updates from every auction",
+    "bid": "placed a bid",
+    "sealedBid": "sent a sealed bid"
   }
 }

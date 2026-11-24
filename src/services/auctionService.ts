@@ -336,3 +336,27 @@ export async function listSellerAuctions(userId: string): Promise<AuctionSummary
     .map((a) => summarize(a, bids, Date.now()))
     .sort((a, b) => b.createdAt - a.createdAt)
 }
+
+export interface ActivityItem {
+  bid: Bid
+  auction: Pick<Auction, 'id' | 'title' | 'type' | 'category' | 'images'>
+}
+
+/** Latest bids across the platform. Sealed amounts stay hidden (the UI shows no price). */
+export async function listRecentActivity(limit = 6): Promise<ActivityItem[]> {
+  await delay(150)
+  const { auctions, bids } = useDb.getState()
+  const byId = new Map(auctions.map((a) => [a.id, a]))
+  const now = Date.now()
+  return bids
+    .filter((b) => b.at <= now && byId.has(b.auctionId))
+    .sort((a, b) => b.at - a.at)
+    .slice(0, limit)
+    .map((b) => {
+      const { id, title, type, category, images } = byId.get(b.auctionId)!
+      return {
+        bid: type === 'sealed' ? { ...b, amount: 0 } : b,
+        auction: { id, title, type, category, images },
+      }
+    })
+}

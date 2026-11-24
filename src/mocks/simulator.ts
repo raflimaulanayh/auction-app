@@ -1,5 +1,6 @@
 import { auctionStatus, bidIncrement, minNextBid } from '../lib/auction-rules'
-import { placeBidNow } from '../services/auctionService'
+import { placeBidNow, submitSealedBid } from '../services/auctionService'
+import type { User } from '../types'
 import { useDb } from './db'
 import { BOTS } from './seed'
 
@@ -10,7 +11,25 @@ import { BOTS } from './seed'
 export function startSimulator() {
   let timer: ReturnType<typeof setTimeout>
 
+  /** Occasionally a bot joins an open sealed-bid auction (once per bot per auction). */
+  const sealedTick = () => {
+    const { auctions, bids } = useDb.getState()
+    const now = Date.now()
+    const open = auctions.filter((a) => a.type === 'sealed' && auctionStatus(a, now) === 'live')
+    const auction = open[Math.floor(Math.random() * open.length)]
+    if (!auction) return
+    const joined = new Set(bids.filter((b) => b.auctionId === auction.id).map((b) => b.userId))
+    const bot = BOTS.find((b) => !joined.has(b.id))
+    if (!bot) return
+    const amount =
+      Math.round((auction.startingPrice * (1.05 + Math.random() * 0.3)) / 50_000) * 50_000
+    void submitSealedBid(auction.id, { ...bot, email: '', role: 'buyer' } as User, amount).catch(
+      () => {},
+    )
+  }
+
   const tick = () => {
+    if (Math.random() < 0.2) sealedTick()
     const { auctions, bids } = useDb.getState()
     const now = Date.now()
     const live = auctions.filter((a) => a.type === 'english' && auctionStatus(a, now) === 'live')

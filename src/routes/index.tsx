@@ -3,6 +3,7 @@ import { ArrowRightIcon } from '@phosphor-icons/react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
+import { ActivityFeed } from '../components/ActivityFeed'
 import { AuctionGrid } from '../components/AuctionCard'
 import { TYPE_ICON } from '../components/auction-bits'
 import { Display, Marker, ScriptNote } from '../components/brand'
@@ -155,6 +156,7 @@ function HomePage() {
     <div className="space-y-24">
       <HeroSlider />
       <Stats />
+      <ActivityFeed />
       <Formats />
       <AuctionRow
         type="english"

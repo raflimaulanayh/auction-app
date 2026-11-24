@@ -288,5 +288,12 @@
     "errorCard": "tenang, data kamu aman",
     "retry": "Coba lagi",
     "details": "Detail error (mode dev)"
+  },
+  "activity": {
+    "note": "lagi rame banget",
+    "title": "Aktivitas terbaru",
+    "live": "Update real-time dari semua lelang",
+    "bid": "menawar",
+    "sealedBid": "mengirim tawaran tertutup"
   }
 }

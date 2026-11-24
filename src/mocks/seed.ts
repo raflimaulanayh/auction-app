@@ -10,11 +10,49 @@ export const BOTS = [
   { id: 'u-rina', name: 'Rina W.' },
   { id: 'u-dewi', name: 'Dewi K.' },
   { id: 'u-fajar', name: 'Fajar R.' },
+  { id: 'u-yoga', name: 'Yoga S.' },
+  { id: 'u-maya', name: 'Maya L.' },
+  { id: 'u-kevin', name: 'Kevin T.' },
+  { id: 'u-nadia', name: 'Nadia H.' },
 ]
 
 // Free Unsplash photos (hotlinked via their CDN). Items without an entry fall back to
 // the illustrated placeholder, which also covers photos that fail to load.
 const PHOTOS: Record<string, string[]> = {
+  'leica-m6': [
+    'photo-1594470760093-c02cf339ad45',
+    'photo-1563441846967-d5c0d86b20a6',
+    'photo-1488240339625-c4014e114224',
+  ],
+  'nintendo-switch-oled': [
+    'photo-1612036781124-847f8939b154',
+    'photo-1585427795543-33cf23ea2853',
+    'photo-1585857188823-77658a70979a',
+    'photo-1591182136289-67ff16828fd4',
+  ],
+  'batik-tulis-lasem': [
+    'photo-1761517099171-de5772a56956',
+    'photo-1761517099349-3536c67a198b',
+    'photo-1635790073975-ac99496914e3',
+    'photo-1761516659766-c092d4b1209d',
+  ],
+  'airpods-max': [
+    'photo-1612116454817-2b0841e30eaf',
+    'photo-1625245488600-f03fef636a3c',
+    'photo-1609081219090-a6d81d3085bf',
+    'photo-1785340924152-69172606f5ad',
+  ],
+  'seiko-presage': [
+    'photo-1616926569136-72733513cf2f',
+    'photo-1663495974376-1b0f63f593b6',
+    'photo-1675677728663-1b74018c50f9',
+  ],
+  'turntable-vintage': [
+    'photo-1616714108212-fb526152dbf9',
+    'photo-1603850121303-d4ade9e5ba65',
+    'photo-1773062189964-75a471b19934',
+    'photo-1616714109948-c74fe5029a4d',
+  ],
   'iphone-16-pro-max': [
     'photo-1727093493838-5a5f2da03b65',
     'photo-1727013884184-b313982327f3',
@@ -85,6 +123,8 @@ export interface DemoDb {
   bids: Bid[]
   proxies: ProxyBid[]
   watchlist: Record<string, string[]>
+  /** Last time the app was open; the demo clock pauses while it is closed. */
+  clock: number
 }
 
 export function createSeed(now = Date.now()): DemoDb {
@@ -281,6 +321,108 @@ export function createSeed(now = Date.now()): DemoDb {
       startingPrice: 35_000_000,
       currentPrice: 35_000_000,
     },
+    {
+      ...base,
+      id: 'leica-m6',
+      title: 'Leica M6 TTL 0.72 Black + Summicron 35mm f/2',
+      description:
+        'Kamera film rangefinder legendaris, light meter berfungsi normal, viewfinder jernih. Lensa bebas jamur dan baret, termasuk strap kulit original.',
+      category: 'electronics',
+      sellerId: 'u-galeri',
+      sellerName: 'Analog Corner',
+      type: 'english',
+      startsAt: now - 27 * HOUR,
+      endsAt: now - 3 * HOUR,
+      startingPrice: 32_000_000,
+      currentPrice: 42_500_000,
+      reservePrice: 38_000_000,
+      winnerId: 'u-dewi',
+      createdAt: now - 30 * HOUR,
+    },
+    {
+      ...base,
+      id: 'airpods-max',
+      title: 'AirPods Max — Silver (Garansi iBox)',
+      description:
+        'Pemakaian 3 bulan, earcup bersih, lengkap dengan Smart Case dan kabel USB-C. Garansi resmi masih 9 bulan.',
+      category: 'electronics',
+      sellerId: 'u-sari',
+      sellerName: 'Sari Collection',
+      type: 'dutch',
+      startsAt: now - 6 * HOUR,
+      endsAt: now - 4 * HOUR,
+      startingPrice: 9_000_000,
+      currentPrice: 6_250_000,
+      floorPrice: 5_000_000,
+      decrement: 250_000,
+      intervalSec: 60,
+      soldAt: now - 5.5 * HOUR,
+      winnerId: 'u-maya',
+      createdAt: now - 7 * HOUR,
+    },
+    {
+      ...base,
+      id: 'nintendo-switch-oled',
+      title: 'Nintendo Switch OLED Neon + 5 Game Fisik',
+      description:
+        'Mulus, layar tanpa dead pixel, Joy-Con tidak drift. Bonus Zelda TOTK, Mario Kart 8, Pokémon Violet, Smash Bros, dan Animal Crossing.',
+      category: 'collectibles',
+      sellerId: 'u-galeri',
+      sellerName: 'Garasi Kemang',
+      type: 'english',
+      startsAt: now - 4 * HOUR,
+      endsAt: now + 6 * HOUR,
+      startingPrice: 3_500_000,
+      currentPrice: 4_250_000,
+    },
+    {
+      ...base,
+      id: 'turntable-vintage',
+      title: 'Turntable Vintage + 20 Piringan Hitam Klasik',
+      description:
+        'Turntable belt-drive restorasi penuh, jarum baru. Termasuk 20 piringan hitam: The Beatles, Koes Plus, Chrisye, dan jazz klasik.',
+      category: 'collectibles',
+      sellerId: 'u-galeri',
+      sellerName: 'Analog Corner',
+      type: 'dutch',
+      startsAt: now - 6 * MIN,
+      endsAt: now + 50 * MIN,
+      startingPrice: 7_500_000,
+      currentPrice: 7_500_000,
+      floorPrice: 3_000_000,
+      decrement: 150_000,
+      intervalSec: 25,
+    },
+    {
+      ...base,
+      id: 'batik-tulis-lasem',
+      title: 'Kain Batik Tulis Lasem Tiga Negeri (Antik)',
+      description:
+        'Batik tulis Lasem motif Tiga Negeri, pewarna alam, usia sekitar 60 tahun. Ukuran 105×250 cm, kondisi sangat terawat.',
+      category: 'art',
+      sellerId: 'u-galeri',
+      sellerName: 'Galeri Nusantara',
+      type: 'sealed',
+      startsAt: now - 3 * HOUR,
+      endsAt: now + 8 * HOUR,
+      startingPrice: 4_000_000,
+      currentPrice: 4_000_000,
+    },
+    {
+      ...base,
+      id: 'seiko-presage',
+      title: 'Seiko Presage Cocktail Time SRPB43',
+      description:
+        'Fullset box & papers, pembelian 2024. Dial "Skydiving" dengan tekstur sunburst, kondisi 99% seperti baru.',
+      category: 'watches',
+      sellerId: 'u-sari',
+      sellerName: 'Sari Collection',
+      type: 'english',
+      startsAt: now + 2 * HOUR,
+      endsAt: now + 26 * HOUR,
+      startingPrice: 4_500_000,
+      currentPrice: 4_500_000,
+    },
   ]
 
   let n = 0
@@ -326,6 +468,42 @@ export function createSeed(now = Date.now()): DemoDb {
     bid('fender-strat-1978', 'u-dewi', 'Dewi K.', 38_000_000, 40),
   ]
 
+  // Earlier bidding rounds so live auctions look like they have been running for hours.
+  const history = (
+    auctionId: string,
+    from: number,
+    to: number,
+    fromAgoMin: number,
+    toAgoMin: number,
+    steps: number,
+  ) => {
+    for (let i = 0; i < steps; i++) {
+      const p = i / steps
+      const amount = Math.round((from + (to - from) * p) / 50_000) * 50_000
+      const bot = BOTS[(i * 3 + auctionId.length) % BOTS.length]
+      bids.push(bid(auctionId, bot.id, bot.name, amount, fromAgoMin - (fromAgoMin - toAgoMin) * p))
+    }
+  }
+  history('rolex-submariner', 150_000_000, 158_000_000, 290, 130, 6)
+  history('vespa-sprint', 28_000_000, 30_000_000, 58, 52, 3)
+  history('hermes-birkin-30', 250_000_000, 255_000_000, 590, 410, 4)
+  history('keris-luk-9', 8_000_000, 9_000_000, 1780, 1550, 3)
+  history('leica-m6', 32_000_000, 41_500_000, 1600, 200, 9)
+  history('nintendo-switch-oled', 3_500_000, 4_100_000, 230, 18, 5)
+  bids.push(
+    bid('leica-m6', 'u-dewi', 'Dewi K.', 42_500_000, 185),
+    bid('airpods-max', 'u-maya', 'Maya L.', 6_250_000, 330),
+    bid('nintendo-switch-oled', 'u-yoga', 'Yoga S.', 4_250_000, 7),
+    bid('batik-tulis-lasem', 'u-nadia', 'Nadia H.', 5_200_000, 150),
+    bid('batik-tulis-lasem', 'u-rina', 'Rina W.', 4_750_000, 95),
+    bid('batik-tulis-lasem', 'u-andi', 'Andi P.', 6_000_000, 35),
+    bid('macbook-pro-m4', 'u-maya', 'Maya L.', 28_250_000, 80),
+    bid('macbook-pro-m4', 'u-kevin', 'Kevin T.', 30_100_000, 15),
+    bid('fender-strat-1978', 'u-yoga', 'Yoga S.', 36_500_000, 25),
+    bid('fender-strat-1978', 'u-nadia', 'Nadia H.', 41_000_000, 10),
+    bid('koin-voc-1790', 'u-kevin', 'Kevin T.', 5_500_000, 400),
+  )
+
   // Andi defends the iPhone up to 18.5jt — demonstrates proxy bidding against Budi.
   const proxies: ProxyBid[] = [
     { auctionId: 'iphone-16-pro-max', userId: 'u-andi', userName: 'Andi P.', max: 18_500_000 },
@@ -340,5 +518,6 @@ export function createSeed(now = Date.now()): DemoDb {
     bids,
     proxies,
     watchlist: { 'u-budi': ['rolex-submariner', 'lukisan-senja-ubud'] },
+    clock: now,
   }
 }

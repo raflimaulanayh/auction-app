@@ -14,10 +14,14 @@ export const keys = {
   myBids: (userId: string) => ['auctions', 'my-bids', userId] as const,
   watchlist: (userId: string) => ['auctions', 'watchlist', userId] as const,
   seller: (userId: string) => ['auctions', 'seller', userId] as const,
+  activity: ['auctions', 'activity'] as const,
 }
 
 export const useAuctions = (filters: AuctionFilters) =>
   useQuery({ queryKey: keys.list(filters), queryFn: () => api.listAuctions(filters) })
+
+export const useRecentActivity = () =>
+  useQuery({ queryKey: keys.activity, queryFn: () => api.listRecentActivity() })
 
 export function useAuction(id: string) {
   const userId = useSession((s) => s.user?.id)
